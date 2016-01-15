@@ -71,3 +71,5 @@ packages
 
 # Windows
 Thumbs.db
+*.ldf
+*.mdf

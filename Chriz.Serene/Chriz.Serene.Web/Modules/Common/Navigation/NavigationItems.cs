@@ -1,8 +1,12 @@
-﻿using Serenity.Navigation;
+﻿using Chriz.Serene.MovieDB.Pages;
+using Serenity.Navigation;
 using Northwind = Chriz.Serene.Northwind.Pages;
 using Administration = Chriz.Serene.Administration.Pages;
 
 [assembly: NavigationLink(1000, "Dashboard", url: "~/", permission: "", icon: "icon-speedometer")]
+
+[assembly: NavigationMenu(2000, "Movie Database", icon: "icon-film")]
+[assembly: NavigationLink(2100, "Movie Database/Movie", typeof(MovieController), icon: "icon-camrecorder")]
 
 [assembly: NavigationMenu(7000, "Northwind", icon: "icon-anchor")]
 [assembly: NavigationLink(7100, "Northwind/Customers", typeof(Northwind.CustomerController), icon: "icon-wallet")]

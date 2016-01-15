@@ -1404,6 +1404,7 @@
     <Content Include="Modules\Administration\Language\LanguageIndex.cshtml" />
     <Content Include="Modules\Administration\Translation\TranslationIndex.cshtml" />
     <Content Include="Modules\Administration\Role\RoleIndex.cshtml" />
+    <Content Include="Modules\MovieDB\Movie\MovieIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
@@ -1452,8 +1453,10 @@
     <Compile Include="Modules\Common\Imports\ScriptFormatterTypes.cs">
       <DependentUpon>ScriptFormatterTypes.tt</DependentUpon>
     </Compile>
+    <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_201601151442_AddMoive.cs" />
     <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_20151217_000600_LastDirectoryUpdate.cs" />
     <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_20151111_133500_UserPermissionGrant.cs" />
+    <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_201601151615_SampleMovie.cs" />
     <Compile Include="Modules\Common\Migrations\NorthwindDB\NorthwindDB_20151226_184500_Notes.cs" />
     <Compile Include="Modules\Common\Migrations\NorthwindDB\NorthwindDB_20151202_193700_ProductLog.cs" />
     <Compile Include="Modules\Common\Migrations\NorthwindDB\NorthwindDB_20151014_030700_OrderDetailID.cs" />
@@ -1618,6 +1621,12 @@
     <Compile Include="Modules\Administration\UserPermission\UserPermissionEndpoint.cs" />
     <Compile Include="Modules\Northwind\Note\NoteRow.cs" />
     <Compile Include="Modules\Northwind\Note\NoteRepository.cs" />
+    <Compile Include="Modules\MovieDB\Movie\MovieRow.cs" />
+    <Compile Include="Modules\MovieDB\Movie\MovieColumns.cs" />
+    <Compile Include="Modules\MovieDB\Movie\MovieForm.cs" />
+    <Compile Include="Modules\MovieDB\Movie\MovieRepository.cs" />
+    <Compile Include="Modules\MovieDB\Movie\MovieEndpoint.cs" />
+    <Compile Include="Modules\MovieDB\Movie\MoviePage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
