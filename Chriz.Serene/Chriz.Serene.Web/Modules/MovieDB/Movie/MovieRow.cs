@@ -1,50 +1,52 @@
-﻿
+﻿using System;
+using System.ComponentModel;
+using Serenity.Data;
+using Serenity.Data.Mapping;
+
 namespace Chriz.Serene.MovieDB.Entities
 {
-    using Newtonsoft.Json;
-    using Serenity;
-    using Serenity.ComponentModel;
-    using Serenity.Data;
-    using Serenity.Data.Mapping;
-    using System;
-    using System.ComponentModel;
-    using System.IO;
-
     [ConnectionKey("Default"), DisplayName("Movie"), InstanceName("Movie"), TwoLevelCached]
     [ReadPermission("Administration")]
     [ModifyPermission("Administration")]
     public sealed class MovieRow : Row, IIdRow, INameRow
     {
+        public static readonly RowFields Fields = new RowFields().Init();
+
+        public MovieRow()
+            : base(Fields)
+        {
+        }
+
         [DisplayName("Movie Id"), Identity]
-        public Int32? MovieId
+        public int? MovieId
         {
             get { return Fields.MovieId[this]; }
             set { Fields.MovieId[this] = value; }
         }
 
         [DisplayName("Title"), Size(200), NotNull, QuickSearch]
-        public String Title
+        public string Title
         {
             get { return Fields.Title[this]; }
             set { Fields.Title[this] = value; }
         }
 
         [DisplayName("Description"), Size(1000)]
-        public String Description
+        public string Description
         {
             get { return Fields.Description[this]; }
             set { Fields.Description[this] = value; }
         }
 
         [DisplayName("Storyline")]
-        public String Storyline
+        public string Storyline
         {
             get { return Fields.Storyline[this]; }
             set { Fields.Storyline[this] = value; }
         }
 
         [DisplayName("Year")]
-        public Int32? Year
+        public int? Year
         {
             get { return Fields.Year[this]; }
             set { Fields.Year[this] = value; }
@@ -58,7 +60,7 @@ namespace Chriz.Serene.MovieDB.Entities
         }
 
         [DisplayName("Runtime")]
-        public Int32? Runtime
+        public int? Runtime
         {
             get { return Fields.Runtime[this]; }
             set { Fields.Runtime[this] = value; }
@@ -74,22 +76,15 @@ namespace Chriz.Serene.MovieDB.Entities
             get { return Fields.Title; }
         }
 
-        public static readonly RowFields Fields = new RowFields().Init();
-
-        public MovieRow()
-            : base(Fields)
-        {
-        }
-
         public class RowFields : RowFieldsBase
         {
-            public readonly Int32Field MovieId;
-            public readonly StringField Title;
             public readonly StringField Description;
-            public readonly StringField Storyline;
-            public readonly Int32Field Year;
+            public readonly Int32Field MovieId;
             public readonly DateTimeField ReleaseDate;
             public readonly Int32Field Runtime;
+            public readonly StringField Storyline;
+            public readonly StringField Title;
+            public readonly Int32Field Year;
 
             public RowFields()
                 : base("[mov].[Movie]")
