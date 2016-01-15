@@ -12,10 +12,9 @@ namespace Chriz.Serene.MovieDB
     public partial class MovieForm : PrefixedContext
     {
         [InlineConstant] public const string FormKey = "MovieDB.Movie";
-
+    
         public MovieForm(string idPrefix) : base(idPrefix) {}
-
-
+    
         public StringEditor Title { get { return ById<StringEditor>("Title"); } }
         public StringEditor Description { get { return ById<StringEditor>("Description"); } }
         public StringEditor Storyline { get { return ById<StringEditor>("Storyline"); } }
@@ -24,3 +23,4 @@ namespace Chriz.Serene.MovieDB
         public IntegerEditor Runtime { get { return ById<IntegerEditor>("Runtime"); } }
     }
 }
+

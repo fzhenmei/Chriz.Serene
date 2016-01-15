@@ -1,5 +1,4 @@
-﻿
-namespace Chriz.Serene.MovieDB
+﻿namespace Chriz.Serene.MovieDB
 {
     using jQueryApi;
     using Serenity;
@@ -12,37 +11,37 @@ namespace Chriz.Serene.MovieDB
     public partial class MovieService
     {
         [InlineConstant] public const string BaseUrl = "MovieDB/Movie";
-
+    
         [InlineCode("Q.serviceRequest('MovieDB/Movie/Create', {request}, {onSuccess}, {options})")]
         public static jQueryXmlHttpRequest Create(SaveRequest<MovieRow> request, Action<SaveResponse> onSuccess, ServiceCallOptions options = null)
         {
             return null;
         }
-
+    
         [InlineCode("Q.serviceRequest('MovieDB/Movie/Update', {request}, {onSuccess}, {options})")]
         public static jQueryXmlHttpRequest Update(SaveRequest<MovieRow> request, Action<SaveResponse> onSuccess, ServiceCallOptions options = null)
         {
             return null;
         }
- 
+    
         [InlineCode("Q.serviceRequest('MovieDB/Movie/Delete', {request}, {onSuccess}, {options})")]
         public static jQueryXmlHttpRequest Delete(DeleteRequest request, Action<DeleteResponse> onSuccess, ServiceCallOptions options = null)
         {
             return null;
         }
-
+    
         [InlineCode("Q.serviceRequest('MovieDB/Movie/Retrieve', {request}, {onSuccess}, {options})")]
         public static jQueryXmlHttpRequest Retrieve(RetrieveRequest request, Action<RetrieveResponse<MovieRow>> onSuccess, ServiceCallOptions options = null)
         {
             return null;
         }
-
+    
         [InlineCode("Q.serviceRequest('MovieDB/Movie/List', {request}, {onSuccess}, {options})")]
         public static jQueryXmlHttpRequest List(ListRequest request, Action<ListResponse<MovieRow>> onSuccess, ServiceCallOptions options = null)
         {
             return null;
         }
-
+    
         [Imported, PreserveMemberCase]
         public static class Methods
         {
@@ -53,4 +52,6 @@ namespace Chriz.Serene.MovieDB
             [InlineConstant] public const string List = "MovieDB/Movie/List";
         }
     }
+    
 }
+

@@ -1984,7 +1984,16 @@
 			return this.byId(Serenity.IntegerEditor).call(this, 'Runtime');
 		}
 	}, Serenity.PrefixedContext);
-	ss.initClass($Chriz_Serene_MovieDB_MovieGrid, $asm, {}, ss.makeGenericType(Serenity.EntityGrid$1, [Object]), [Serenity.IDataGrid]);
+	ss.initClass($Chriz_Serene_MovieDB_MovieGrid, $asm, {
+		getQuickSearchFields: function() {
+			var $t1 = [];
+			$t1.push({ name: '', title: 'all' });
+			$t1.push({ name: 'Description', title: 'description' });
+			$t1.push({ name: 'Storyline', title: 'storyline' });
+			$t1.push({ name: 'Year', title: 'year' });
+			return $t1;
+		}
+	}, ss.makeGenericType(Serenity.EntityGrid$1, [Object]), [Serenity.IDataGrid]);
 	ss.initClass($Chriz_Serene_Northwind_CategoryDialog, $asm, {}, ss.makeGenericType(Serenity.EntityDialog$1, [Object]), [Serenity.IDialog, Serenity.IEditDialog, Serenity.IAsyncInit]);
 	ss.initClass($Chriz_Serene_Northwind_CategoryForm, $asm, {
 		get_categoryName: function() {

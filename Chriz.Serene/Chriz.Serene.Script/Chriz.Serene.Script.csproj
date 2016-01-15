@@ -340,7 +340,9 @@
     <Compile Include="Administration\Role\RoleDialog.cs" />
     <Compile Include="Administration\UserPermission\UserPermissionDialog.cs" />
     <Compile Include="Northwind\Note\NoteDialog.cs" />
-    <Compile Include="Imports\FormContexts\MovieDB.MovieForm.cs" />
+    <Compile Include="Imports\FormContexts\MovieDB.MovieForm.cs">
+      <DependentUpon>FormContexts.tt</DependentUpon>
+    </Compile>
     <Compile Include="MovieDB\Movie\MovieGrid.cs" />
     <Compile Include="MovieDB\Movie\MovieDialog.cs" />
   </ItemGroup>
@@ -368,8 +370,12 @@
     <Compile Include="Imports\ServiceContracts\Northwind.NoteRow.cs">
       <DependentUpon>ServiceContracts.tt</DependentUpon>
     </Compile>
-    <Compile Include="Imports\ServiceContracts\MovieDB.MovieRow.cs">  <DependentUpon>ServiceContracts.tt</DependentUpon></Compile>
-    <Compile Include="Imports\ServiceContracts\MovieDB.MovieService.cs">  <DependentUpon>ServiceContracts.tt</DependentUpon></Compile>
+    <Compile Include="Imports\ServiceContracts\MovieDB.MovieRow.cs">
+      <DependentUpon>ServiceContracts.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Imports\ServiceContracts\MovieDB.MovieService.cs">
+      <DependentUpon>ServiceContracts.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

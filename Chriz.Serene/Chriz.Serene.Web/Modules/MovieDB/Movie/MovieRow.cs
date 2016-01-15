@@ -31,21 +31,21 @@ namespace Chriz.Serene.MovieDB.Entities
             set { Fields.Title[this] = value; }
         }
 
-        [DisplayName("Description"), Size(1000)]
+        [DisplayName("Description"), Size(1000), QuickSearch]
         public string Description
         {
             get { return Fields.Description[this]; }
             set { Fields.Description[this] = value; }
         }
 
-        [DisplayName("Storyline")]
+        [DisplayName("Storyline"), QuickSearch]
         public string Storyline
         {
             get { return Fields.Storyline[this]; }
             set { Fields.Storyline[this] = value; }
         }
 
-        [DisplayName("Year")]
+        [DisplayName("Year"), QuickSearch(SearchType.Equals, numericOnly: 1)]
         public int? Year
         {
             get { return Fields.Year[this]; }

@@ -1457,6 +1457,7 @@
     <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_20151217_000600_LastDirectoryUpdate.cs" />
     <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_20151111_133500_UserPermissionGrant.cs" />
     <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_201601151615_SampleMovie.cs" />
+    <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_201601151756_MoiveKind.cs" />
     <Compile Include="Modules\Common\Migrations\NorthwindDB\NorthwindDB_20151226_184500_Notes.cs" />
     <Compile Include="Modules\Common\Migrations\NorthwindDB\NorthwindDB_20151202_193700_ProductLog.cs" />
     <Compile Include="Modules\Common\Migrations\NorthwindDB\NorthwindDB_20151014_030700_OrderDetailID.cs" />
