@@ -1282,7 +1282,6 @@
     <Content Include="tools\Node\less\lib\less\tree\variable.js" />
     <Content Include="tools\Node\less\lib\less\visitor.js" />
     <Content Include="tools\Node\node.exe" />
-    <Content Include="Welcome.htm" />
     <Content Include="Modules\Membership\Account\ChangePassword\AccountChangePassword.cshtml" />
     <Content Include="Modules\Membership\Account\ForgotPassword\AccountForgotPassword.cshtml" />
     <Content Include="Modules\Membership\Account\ResetPassword\AccountResetPassword.cshtml" />
@@ -1480,6 +1479,7 @@
     <Compile Include="Modules\Common\Reporting\DynamicDataReport.cs" />
     <Compile Include="Modules\Common\Reporting\ExcelReportGenerator.cs" />
     <Compile Include="Modules\Common\Reporting\ReportRepository.cs" />
+    <Compile Include="Modules\CustomPost\CustomPostPage.cs" />
     <Compile Include="Modules\Membership\Account\ChangePassword\AccountPage.ChangePassword.cs" />
     <Compile Include="Modules\Membership\Account\EnvironmentSettings.cs" />
     <Compile Include="Modules\Membership\Account\ForgotPassword\AccountPage.ForgotPassword.cs" />
@@ -1632,6 +1632,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\CustomPostPage\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

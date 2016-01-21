@@ -10,6 +10,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chriz.Serene.Web", "Chriz.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chriz.Serene.Script", "Chriz.Serene\Chriz.Serene.Script\Chriz.Serene.Script.csproj", "{A0098374-9055-40BA-9F81-1C73AE7F3670}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chriz.Serene.Web.Tests", "Chriz.Serene.Web.Tests\Chriz.Serene.Web.Tests.csproj", "{0C107186-E02C-4DFA-B147-FB69FCF21739}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B5718647-E4F3-4927-8A61-49527BFC2026}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +31,10 @@ Global
 		{A0098374-9055-40BA-9F81-1C73AE7F3670}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0098374-9055-40BA-9F81-1C73AE7F3670}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0098374-9055-40BA-9F81-1C73AE7F3670}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C107186-E02C-4DFA-B147-FB69FCF21739}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C107186-E02C-4DFA-B147-FB69FCF21739}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C107186-E02C-4DFA-B147-FB69FCF21739}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C107186-E02C-4DFA-B147-FB69FCF21739}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
