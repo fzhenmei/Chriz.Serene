@@ -493,6 +493,9 @@
     <Content Include="Content\site\images\tick-red-partial.png" />
     <Content Include="Content\site\site.htmlcontent.css" />
     <Content Include="Content\site\site.css" />
+    <Content Include="Content\site\site.min.css">
+      <DependentUpon>site.css</DependentUpon>
+    </Content>
     <Content Include="Content\site\site.mixins.less" />
     <Content Include="Content\site\site.northwind.less" />
     <Content Include="Content\site\site.membership.less" />
@@ -1085,6 +1088,9 @@
     <Content Include="fonts\Simple-Line-Icons.woff" />
     <Content Include="fonts\Simple-Line-Icons.ttf" />
     <Content Include="fonts\Simple-Line-Icons.eot" />
+    <Content Include="Content\site\site.css.map">
+      <DependentUpon>site.css</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jlayout.border.js" />
     <Content Include="Scripts\jlayout.border.min.js" />
@@ -1404,6 +1410,7 @@
     <Content Include="Modules\Administration\Translation\TranslationIndex.cshtml" />
     <Content Include="Modules\Administration\Role\RoleIndex.cshtml" />
     <Content Include="Modules\MovieDB\Movie\MovieIndex.cshtml" />
+    <Content Include="Modules\MovieDB\Genre\GenreIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
@@ -1457,6 +1464,8 @@
     <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_20151111_133500_UserPermissionGrant.cs" />
     <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_201601151615_SampleMovie.cs" />
     <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_201601151756_MoiveKind.cs" />
+    <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_201602171205_Genre.cs" />
+    <Compile Include="Modules\Common\Migrations\DefaultDB\DefaultDB_201602171230_GenresData.cs" />
     <Compile Include="Modules\Common\Migrations\NorthwindDB\NorthwindDB_20151226_184500_Notes.cs" />
     <Compile Include="Modules\Common\Migrations\NorthwindDB\NorthwindDB_20151202_193700_ProductLog.cs" />
     <Compile Include="Modules\Common\Migrations\NorthwindDB\NorthwindDB_20151014_030700_OrderDetailID.cs" />
@@ -1629,6 +1638,12 @@
     <Compile Include="Modules\MovieDB\Movie\MovieRepository.cs" />
     <Compile Include="Modules\MovieDB\Movie\MovieEndpoint.cs" />
     <Compile Include="Modules\MovieDB\Movie\MoviePage.cs" />
+    <Compile Include="Modules\MovieDB\Genre\GenreRow.cs" />
+    <Compile Include="Modules\MovieDB\Genre\GenreColumns.cs" />
+    <Compile Include="Modules\MovieDB\Genre\GenreForm.cs" />
+    <Compile Include="Modules\MovieDB\Genre\GenreRepository.cs" />
+    <Compile Include="Modules\MovieDB\Genre\GenreEndpoint.cs" />
+    <Compile Include="Modules\MovieDB\Genre\GenrePage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

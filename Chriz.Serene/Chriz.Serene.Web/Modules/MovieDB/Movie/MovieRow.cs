@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using Chriz.Serene.Modules.MovieDB.Movie;
+using Serenity.ComponentModel;
 using Serenity.Data;
 using Serenity.Data.Mapping;
 
@@ -59,11 +61,33 @@ namespace Chriz.Serene.MovieDB.Entities
             set { Fields.ReleaseDate[this] = value; }
         }
 
-        [DisplayName("Runtime")]
+        [DisplayName("Runtime (mins)")]
         public int? Runtime
         {
             get { return Fields.Runtime[this]; }
             set { Fields.Runtime[this] = value; }
+        }
+
+        [DisplayName("Kind"), NotNull, DefaultValue(1)]
+        public MovieKind? Kind
+        {
+            get { return (MovieKind?)Fields.Kind[this]; }
+            set { Fields.Kind[this] = (Int32?)value; }
+        }
+
+        [DisplayName("Genre"), ForeignKey("[mov].Genre", "GenreId"), LeftJoin("g")]
+        [LookupEditor("MovieDB.Genre", InplaceAdd = true)]
+        public Int32? GenreId
+        {
+            get { return Fields.GenreId[this]; }
+            set { Fields.GenreId[this] = value; }
+        }
+
+        [DisplayName("Genre"), Expression("g.Name")]
+        public String GenreName
+        {
+            get { return Fields.GenreName[this]; }
+            set { Fields.GenreName[this] = value; }
         }
 
         IIdField IIdRow.IdField
@@ -85,6 +109,9 @@ namespace Chriz.Serene.MovieDB.Entities
             public readonly StringField Storyline;
             public readonly StringField Title;
             public readonly Int32Field Year;
+            public readonly Int32Field Kind;
+            public readonly Int32Field GenreId;
+            public readonly StringField GenreName;
 
             public RowFields()
                 : base("[mov].[Movie]")

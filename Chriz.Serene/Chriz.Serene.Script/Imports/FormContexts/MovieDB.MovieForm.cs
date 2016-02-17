@@ -16,11 +16,13 @@ namespace Chriz.Serene.MovieDB
         public MovieForm(string idPrefix) : base(idPrefix) {}
     
         public StringEditor Title { get { return ById<StringEditor>("Title"); } }
-        public StringEditor Description { get { return ById<StringEditor>("Description"); } }
-        public StringEditor Storyline { get { return ById<StringEditor>("Storyline"); } }
+        public TextAreaEditor Description { get { return ById<TextAreaEditor>("Description"); } }
+        public TextAreaEditor Storyline { get { return ById<TextAreaEditor>("Storyline"); } }
         public IntegerEditor Year { get { return ById<IntegerEditor>("Year"); } }
         public DateEditor ReleaseDate { get { return ById<DateEditor>("ReleaseDate"); } }
         public IntegerEditor Runtime { get { return ById<IntegerEditor>("Runtime"); } }
+        public EnumEditor Kind { get { return ById<EnumEditor>("Kind"); } }
+        public LookupEditor GenreId { get { return ById<LookupEditor>("GenreId"); } }
     }
 }
 

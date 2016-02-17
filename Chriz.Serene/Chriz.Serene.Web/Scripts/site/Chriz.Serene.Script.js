@@ -6,6 +6,9 @@
 	global.Chriz.Serene.Administration = global.Chriz.Serene.Administration || {};
 	global.Chriz.Serene.Common = global.Chriz.Serene.Common || {};
 	global.Chriz.Serene.Membership = global.Chriz.Serene.Membership || {};
+	global.Chriz.Serene.Modules = global.Chriz.Serene.Modules || {};
+	global.Chriz.Serene.Modules.MovieDB = global.Chriz.Serene.Modules.MovieDB || {};
+	global.Chriz.Serene.Modules.MovieDB.Movie = global.Chriz.Serene.Modules.MovieDB.Movie || {};
 	global.Chriz.Serene.MovieDB = global.Chriz.Serene.MovieDB || {};
 	global.Chriz.Serene.Northwind = global.Chriz.Serene.Northwind || {};
 	global.Serenity = global.Serenity || {};
@@ -723,6 +726,35 @@
 	};
 	$Chriz_Serene_Membership_SignUpPanel.__typeName = 'Chriz.Serene.Membership.SignUpPanel';
 	global.Chriz.Serene.Membership.SignUpPanel = $Chriz_Serene_Membership_SignUpPanel;
+	////////////////////////////////////////////////////////////////////////////////
+	// Chriz.Serene.Modules.MovieDB.Movie.MovieKind
+	var $Chriz_Serene_Modules_MovieDB_Movie_MovieKind = function() {
+	};
+	$Chriz_Serene_Modules_MovieDB_Movie_MovieKind.__typeName = 'Chriz.Serene.Modules.MovieDB.Movie.MovieKind';
+	global.Chriz.Serene.Modules.MovieDB.Movie.MovieKind = $Chriz_Serene_Modules_MovieDB_Movie_MovieKind;
+	////////////////////////////////////////////////////////////////////////////////
+	// Chriz.Serene.MovieDB.GenreDialog
+	var $Chriz_Serene_MovieDB_GenreDialog = function() {
+		this.form = null;
+		ss.makeGenericType(Serenity.EntityDialog$1, [Object]).call(this);
+		this.form = new $Chriz_Serene_MovieDB_GenreForm(this.get_idPrefix());
+	};
+	$Chriz_Serene_MovieDB_GenreDialog.__typeName = 'Chriz.Serene.MovieDB.GenreDialog';
+	global.Chriz.Serene.MovieDB.GenreDialog = $Chriz_Serene_MovieDB_GenreDialog;
+	////////////////////////////////////////////////////////////////////////////////
+	// Chriz.Serene.MovieDB.GenreForm
+	var $Chriz_Serene_MovieDB_GenreForm = function(idPrefix) {
+		Serenity.PrefixedContext.call(this, idPrefix);
+	};
+	$Chriz_Serene_MovieDB_GenreForm.__typeName = 'Chriz.Serene.MovieDB.GenreForm';
+	global.Chriz.Serene.MovieDB.GenreForm = $Chriz_Serene_MovieDB_GenreForm;
+	////////////////////////////////////////////////////////////////////////////////
+	// Chriz.Serene.MovieDB.GenreGrid
+	var $Chriz_Serene_MovieDB_GenreGrid = function(container) {
+		ss.makeGenericType(Serenity.EntityGrid$1, [Object]).call(this, container);
+	};
+	$Chriz_Serene_MovieDB_GenreGrid.__typeName = 'Chriz.Serene.MovieDB.GenreGrid';
+	global.Chriz.Serene.MovieDB.GenreGrid = $Chriz_Serene_MovieDB_GenreGrid;
 	////////////////////////////////////////////////////////////////////////////////
 	// Chriz.Serene.MovieDB.MovieDialog
 	var $Chriz_Serene_MovieDB_MovieDialog = function() {
@@ -1963,16 +1995,24 @@
 		}
 	}, Serenity.PrefixedContext);
 	ss.initClass($Chriz_Serene_Membership_SignUpPanel, $asm, {}, ss.makeGenericType(Serenity.PropertyPanel$1, [Object]));
+	ss.initEnum($Chriz_Serene_Modules_MovieDB_Movie_MovieKind, $asm, { Film: 1, TvSeries: 2, MiniSeries: 3 });
+	ss.initClass($Chriz_Serene_MovieDB_GenreDialog, $asm, {}, ss.makeGenericType(Serenity.EntityDialog$1, [Object]), [Serenity.IDialog, Serenity.IEditDialog]);
+	ss.initClass($Chriz_Serene_MovieDB_GenreForm, $asm, {
+		get_name: function() {
+			return this.byId(Serenity.StringEditor).call(this, 'Name');
+		}
+	}, Serenity.PrefixedContext);
+	ss.initClass($Chriz_Serene_MovieDB_GenreGrid, $asm, {}, ss.makeGenericType(Serenity.EntityGrid$1, [Object]), [Serenity.IDataGrid]);
 	ss.initClass($Chriz_Serene_MovieDB_MovieDialog, $asm, {}, ss.makeGenericType(Serenity.EntityDialog$1, [Object]), [Serenity.IDialog, Serenity.IEditDialog]);
 	ss.initClass($Chriz_Serene_MovieDB_MovieForm, $asm, {
 		get_title: function() {
 			return this.byId(Serenity.StringEditor).call(this, 'Title');
 		},
 		get_description: function() {
-			return this.byId(Serenity.StringEditor).call(this, 'Description');
+			return this.byId(Serenity.TextAreaEditor).call(this, 'Description');
 		},
 		get_storyline: function() {
-			return this.byId(Serenity.StringEditor).call(this, 'Storyline');
+			return this.byId(Serenity.TextAreaEditor).call(this, 'Storyline');
 		},
 		get_year: function() {
 			return this.byId(Serenity.IntegerEditor).call(this, 'Year');
@@ -1982,6 +2022,9 @@
 		},
 		get_runtime: function() {
 			return this.byId(Serenity.IntegerEditor).call(this, 'Runtime');
+		},
+		get_kind: function() {
+			return this.byId(Serenity.EnumEditor).call(this, 'Kind');
 		}
 	}, Serenity.PrefixedContext);
 	ss.initClass($Chriz_Serene_MovieDB_MovieGrid, $asm, {
@@ -2843,6 +2886,9 @@
 	ss.setMetadata($Chriz_Serene_Membership_LoginPanel, { attr: [new Serenity.FormKeyAttribute('Membership.Login')] });
 	ss.setMetadata($Chriz_Serene_Membership_ResetPasswordPanel, { attr: [new Serenity.PanelAttribute(), new Serenity.FormKeyAttribute('Membership.ResetPassword')] });
 	ss.setMetadata($Chriz_Serene_Membership_SignUpPanel, { attr: [new Serenity.PanelAttribute(), new Serenity.FormKeyAttribute('Membership.SignUp')] });
+	ss.setMetadata($Chriz_Serene_Modules_MovieDB_Movie_MovieKind, { attr: [new Serenity.EnumKeyAttribute('MovieDB.MovieKind')] });
+	ss.setMetadata($Chriz_Serene_MovieDB_GenreDialog, { attr: [new Serenity.IdPropertyAttribute('GenreId'), new Serenity.NamePropertyAttribute('Name'), new Serenity.FormKeyAttribute('MovieDB.Genre'), new Serenity.LocalTextPrefixAttribute('MovieDB.Genre'), new Serenity.ServiceAttribute('MovieDB/Genre')] });
+	ss.setMetadata($Chriz_Serene_MovieDB_GenreGrid, { attr: [new Serenity.ColumnsKeyAttribute('MovieDB.Genre'), new Serenity.IdPropertyAttribute('GenreId'), new Serenity.NamePropertyAttribute('Name'), new Serenity.DialogTypeAttribute($Chriz_Serene_MovieDB_GenreDialog), new Serenity.LocalTextPrefixAttribute('MovieDB.Genre'), new Serenity.ServiceAttribute('MovieDB/Genre')] });
 	ss.setMetadata($Chriz_Serene_MovieDB_MovieDialog, { attr: [new Serenity.IdPropertyAttribute('MovieId'), new Serenity.NamePropertyAttribute('Title'), new Serenity.FormKeyAttribute('MovieDB.Movie'), new Serenity.LocalTextPrefixAttribute('MovieDB.Movie'), new Serenity.ServiceAttribute('MovieDB/Movie')] });
 	ss.setMetadata($Chriz_Serene_MovieDB_MovieGrid, { attr: [new Serenity.ColumnsKeyAttribute('MovieDB.Movie'), new Serenity.IdPropertyAttribute('MovieId'), new Serenity.NamePropertyAttribute('Title'), new Serenity.DialogTypeAttribute($Chriz_Serene_MovieDB_MovieDialog), new Serenity.LocalTextPrefixAttribute('MovieDB.Movie'), new Serenity.ServiceAttribute('MovieDB/Movie')] });
 	ss.setMetadata($Chriz_Serene_Northwind_CategoryDialog, { attr: [new Serenity.IdPropertyAttribute('CategoryID'), new Serenity.NamePropertyAttribute('CategoryName'), new Serenity.FormKeyAttribute('Northwind.Category'), new Serenity.LocalTextPrefixAttribute('Northwind.Category'), new Serenity.ServiceAttribute('Northwind/Category')] });

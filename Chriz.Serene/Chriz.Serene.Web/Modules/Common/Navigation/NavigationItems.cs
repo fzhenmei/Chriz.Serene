@@ -7,6 +7,7 @@ using Administration = Chriz.Serene.Administration.Pages;
 
 [assembly: NavigationMenu(2000, "Movie Database", icon: "icon-film")]
 [assembly: NavigationLink(2100, "Movie Database/Movie", typeof(MovieController), icon: "icon-camrecorder")]
+[assembly: NavigationLink(2200, "Movie Database/Genre", typeof(GenreController), icon: "icon-pin")]
 
 [assembly: NavigationMenu(7000, "Northwind", icon: "icon-anchor")]
 [assembly: NavigationLink(7100, "Northwind/Customers", typeof(Northwind.CustomerController), icon: "icon-wallet")]

@@ -43,6 +43,9 @@
     <Compile Include="Imports\ServiceContracts\Membership.SignUpRequest.cs">
       <DependentUpon>ServiceContracts.tt</DependentUpon>
     </Compile>
+    <Compile Include="Imports\ServiceContracts\Modules.MovieDB.Movie.MovieKind.cs">
+      <DependentUpon>ServiceContracts.tt</DependentUpon>
+    </Compile>
     <Compile Include="Imports\ServiceContracts\Northwind.ProductLogRow.cs">
       <DependentUpon>ServiceContracts.tt</DependentUpon>
     </Compile>
@@ -345,6 +348,11 @@
     </Compile>
     <Compile Include="MovieDB\Movie\MovieGrid.cs" />
     <Compile Include="MovieDB\Movie\MovieDialog.cs" />
+    <Compile Include="Imports\FormContexts\MovieDB.GenreForm.cs">
+      <DependentUpon>FormContexts.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MovieDB\Genre\GenreGrid.cs" />
+    <Compile Include="MovieDB\Genre\GenreDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Imports\FormContexts\FormContexts.log">
@@ -374,6 +382,12 @@
       <DependentUpon>ServiceContracts.tt</DependentUpon>
     </Compile>
     <Compile Include="Imports\ServiceContracts\MovieDB.MovieService.cs">
+      <DependentUpon>ServiceContracts.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Imports\ServiceContracts\MovieDB.GenreRow.cs">
+      <DependentUpon>ServiceContracts.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Imports\ServiceContracts\MovieDB.GenreService.cs">
       <DependentUpon>ServiceContracts.tt</DependentUpon>
     </Compile>
   </ItemGroup>

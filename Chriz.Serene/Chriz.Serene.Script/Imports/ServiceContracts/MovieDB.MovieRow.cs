@@ -23,6 +23,9 @@ namespace Chriz.Serene.MovieDB
         public String Storyline { get; set; }
         public String Title { get; set; }
         public Int32? Year { get; set; }
+        public Serene.Modules.MovieDB.Movie.MovieKind? Kind { get; set; }
+        public Int32? GenreId { get; set; }
+        public String GenreName { get; set; }
     
         [Imported, PreserveMemberCase]
         public static class Fields
@@ -34,6 +37,9 @@ namespace Chriz.Serene.MovieDB
             [InlineConstant] public const string Storyline = "Storyline";
             [InlineConstant] public const string Title = "Title";
             [InlineConstant] public const string Year = "Year";
+            [InlineConstant] public const string Kind = "Kind";
+            [InlineConstant] public const string GenreId = "GenreId";
+            [InlineConstant] public const string GenreName = "GenreName";
         }
     }
     
