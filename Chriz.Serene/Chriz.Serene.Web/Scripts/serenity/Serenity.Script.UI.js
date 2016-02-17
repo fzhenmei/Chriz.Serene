@@ -24,7 +24,7 @@
 					}
 					$t3 = $t2;
 				}
-				this.addItem($t4, $t3, field, false);
+				this.addItem$1($t4, $t3, field, false);
 			}
 		}
 		finally {
@@ -49,7 +49,7 @@
 					$t3 = $t2;
 				}
 				var title = $t3;
-				this.addItem(op.key, title, op, false);
+				this.addItem$1(op.key, title, op, false);
 			}
 		}
 		finally {
@@ -1520,9 +1520,16 @@
 				return !input.hasClass('readonly');
 			}
 		});
-		input.bind('keyup.' + this.uniqueName, $Serenity_DateEditor.dateInputKeyup);
+		input.bind('keyup.' + this.uniqueName, ss.mkdel(this, function(e) {
+			if (e.which === 32 && !this.get_readOnly()) {
+				this.set_valueAsDate(new Date());
+			}
+			else {
+				$Serenity_DateEditor.dateInputKeyup(e);
+			}
+		}));
 		input.bind('change.' + this.uniqueName, $Serenity_DateEditor.dateInputChange);
-		$Serenity_VX.addValidationRule$1(input, this.uniqueName, ss.mkdel(this, function(e) {
+		$Serenity_VX.addValidationRule$1(input, this.uniqueName, ss.mkdel(this, function(e1) {
 			var value = this.get_value();
 			if (ss.isNullOrEmptyString(value)) {
 				return null;
@@ -1563,6 +1570,9 @@
 		}
 		var input = $(e.target);
 		if (!input.is(':input')) {
+			return;
+		}
+		if (input.is(':readonly') || input.is(':disabled')) {
 			return;
 		}
 		var val = ss.coalesce(input.val(), '');
@@ -1694,16 +1704,28 @@
 		this.$4$MinValueField = null;
 		this.$4$MaxValueField = null;
 		ss.makeGenericType($Serenity_Widget$1, [Object]).call(this, input, opt);
-		input.addClass('dateQ s-DateTimeEditor').datepicker({ showOn: 'button' });
-		input.bind('keyup.' + this.uniqueName, $Serenity_DateEditor.dateInputKeyup);
+		input.addClass('dateQ s-DateTimeEditor').datepicker({
+			showOn: 'button',
+			beforeShow: function() {
+				return !input.hasClass('readonly');
+			}
+		});
+		input.bind('keyup.' + this.uniqueName, ss.mkdel(this, function(e) {
+			if (e.which === 32 && !this.get_readOnly()) {
+				this.set_valueAsDate(new Date());
+			}
+			else {
+				$Serenity_DateEditor.dateInputKeyup(e);
+			}
+		}));
 		input.bind('change.' + this.uniqueName, $Serenity_DateEditor.dateInputChange);
 		this.$time = $('<select/>').addClass('editor s-DateTimeEditor time').insertAfter(input.next('.ui-datepicker-trigger'));
-		var $t1 = $Serenity_DateTimeEditor.$getTimeOptions(ss.coalesce(this.options.startHour, 0), 0, ss.coalesce(this.options.endHour, 23), 59, ss.coalesce(this.options.intervalMinutes, 30));
+		var $t1 = $Serenity_DateTimeEditor.$getTimeOptions(ss.coalesce(this.options.startHour, 0), 0, ss.coalesce(this.options.endHour, 23), 59, ss.coalesce(this.options.intervalMinutes, 5));
 		for (var $t2 = 0; $t2 < $t1.length; $t2++) {
 			var t = $t1[$t2];
 			Q.addOption(this.$time, t, t);
 		}
-		$Serenity_VX.addValidationRule$1(input, this.uniqueName, ss.mkdel(this, function(e) {
+		$Serenity_VX.addValidationRule$1(input, this.uniqueName, ss.mkdel(this, function(e1) {
 			var value = this.get_value();
 			if (ss.isNullOrEmptyString(value)) {
 				return null;
@@ -1715,6 +1737,12 @@
 				return ss.formatString(Q.text('Validation.MaxDate'), Q.formatDate(Q.parseISODateTime(this.get_maxValue()), null));
 			}
 			return null;
+		}));
+		$("<div class='inplace-button inplace-now'><b></b></div>").attr('title', 'set to now').insertAfter(this.$time).click(ss.mkdel(this, function(e2) {
+			if (this.get_element().hasClass('readonly')) {
+				return;
+			}
+			this.set_valueAsDate(new Date());
 		}));
 	};
 	$Serenity_DateTimeEditor.__typeName = 'Serenity.DateTimeEditor';
@@ -1741,6 +1769,14 @@
 			}
 		}
 		return list;
+	};
+	$Serenity_DateTimeEditor.roundToMinutes = function(date, minutesStep) {
+		date = new Date(date.getTime());
+		var m = ss.Int32.trunc(ss.round(date.getMinutes() / minutesStep) * minutesStep);
+		date.setMinutes(m);
+		date.setSeconds(0);
+		date.setMilliseconds(0);
+		return date;
 	};
 	global.Serenity.DateTimeEditor = $Serenity_DateTimeEditor;
 	////////////////////////////////////////////////////////////////////////////////
@@ -4364,7 +4400,7 @@
 		ss.registerGenericClassInstance($type, $Serenity_LookupEditorBase$1, [TItem], {}, function() {
 			return ss.makeGenericType($Serenity_LookupEditorBase$2, [$Serenity_LookupEditorOptions, TItem]);
 		}, function() {
-			return [$Serenity_IStringValue];
+			return [$Serenity_ISetEditValue, $Serenity_IGetEditValue, $Serenity_IStringValue];
 		});
 		$type.$ctor1.prototype = $type.prototype;
 		return $type;
@@ -4449,7 +4485,7 @@
 						var disabled = this.getItemDisabled(ss.cast(item, TItem), lookup);
 						var idValue = item[lookup.get_idField()];
 						var id = (ss.isNullOrUndefined(idValue) ? '' : idValue.toString());
-						this.items.push({ id: id, text: ss.cast(text, String), source: item, disabled: !!disabled });
+						this.addItem({ id: id, text: ss.cast(text, String), source: item, disabled: !!disabled });
 					}
 				}
 				finally {
@@ -4468,7 +4504,7 @@
 							var disabled = this.getItemDisabled(ss.cast(item, TItem), lookup);
 							var idValue = item[lookup.get_idField()];
 							var id = (ss.isNullOrUndefined(idValue) ? '' : idValue.toString());
-							this.items.push({ id: id, text: ss.cast(text, String), source: item, disabled: !!disabled });
+							this.addItem({ id: id, text: ss.cast(text, String), source: item, disabled: !!disabled });
 						}
 					}
 					finally {
@@ -4585,6 +4621,9 @@
 				if (this.options.inplaceAdd) {
 					opt.createSearchChoice = this.getCreateSearchChoice(null);
 				}
+				if (this.options.multiple) {
+					opt.multiple = true;
+				}
 				return opt;
 			},
 			get_cascadeFrom: function() {
@@ -4635,7 +4674,7 @@
 		}, function() {
 			return ss.makeGenericType($Serenity_Select2Editor$2, [TOptions, TItem]);
 		}, function() {
-			return [$Serenity_IStringValue];
+			return [$Serenity_ISetEditValue, $Serenity_IGetEditValue, $Serenity_IStringValue];
 		});
 		ss.setMetadata($type, { attr: [new Serenity.ElementAttribute('<input type="hidden"/>')], members: [{ attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'CascadeField', type: 16, returnType: String, getter: { name: 'get_CascadeField', type: 8, sname: 'get_cascadeField', returnType: String, params: [] }, setter: { name: 'set_CascadeField', type: 8, sname: 'set_cascadeField', returnType: Object, params: [String] } }, { attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'CascadeFrom', type: 16, returnType: String, getter: { name: 'get_CascadeFrom', type: 8, sname: 'get_cascadeFrom', returnType: String, params: [] }, setter: { name: 'set_CascadeFrom', type: 8, sname: 'set_cascadeFrom', returnType: Object, params: [String] } }, { attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'CascadeValue', type: 16, returnType: Object, getter: { name: 'get_CascadeValue', type: 8, sname: 'get_cascadeValue', returnType: Object, params: [] }, setter: { name: 'set_CascadeValue', type: 8, sname: 'set_cascadeValue', returnType: Object, params: [Object] } }, { attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'FilterField', type: 16, returnType: String, getter: { name: 'get_FilterField', type: 8, sname: 'get_filterField', returnType: String, params: [] }, setter: { name: 'set_FilterField', type: 8, sname: 'set_filterField', returnType: Object, params: [String] } }, { attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'FilterValue', type: 16, returnType: Object, getter: { name: 'get_FilterValue', type: 8, sname: 'get_filterValue', returnType: Object, params: [] }, setter: { name: 'set_FilterValue', type: 8, sname: 'set_filterValue', returnType: Object, params: [Object] } }] });
 		return $type;
@@ -4662,6 +4701,8 @@
 		$this.cascadeValue = null;
 		$this.filterField = null;
 		$this.filterValue = null;
+		$this.multiple = false;
+		$this.delimited = false;
 		return $this;
 	};
 	$Serenity_LookupEditorOptions.isInstanceOfType = function() {
@@ -5333,7 +5374,7 @@
 			var editor = this.$createField(fieldContainer, item);
 			this.$editors[i] = editor;
 		}
-		this.$updateReadOnly();
+		this.$updateInterface();
 	};
 	$Serenity_PropertyGrid.__typeName = 'Serenity.PropertyGrid';
 	$Serenity_PropertyGrid.$categoryLinkClick = function(e) {
@@ -5369,6 +5410,7 @@
 		}
 	};
 	$Serenity_PropertyGrid.setRequired = function(widget, isRequired) {
+		$Serenity_EditorUtils.setRequired(widget, isRequired);
 	};
 	$Serenity_PropertyGrid.setReadOnly = function(widget, isReadOnly) {
 		$Serenity_EditorUtils.setReadOnly(widget, isReadOnly);
@@ -6183,16 +6225,21 @@
 	// Serenity.Select2Editor
 	var $Serenity_Select2Editor$2 = function(TOptions, TItem) {
 		var $type = function(hidden, opt) {
+			this.$multiple = false;
 			this.items = null;
+			this.itemById = null;
 			this.pageSize = 100;
 			this.lastCreateTerm = null;
 			ss.makeGenericType($Serenity_Widget$1, [TOptions]).call(this, hidden, opt);
 			this.items = [];
+			this.itemById = {};
 			var emptyItemText = this.emptyItemText();
 			if (ss.isValue(emptyItemText)) {
 				hidden.attr('placeholder', emptyItemText);
 			}
-			hidden.select2(this.getSelect2Options());
+			var select2Options = this.getSelect2Options();
+			this.$multiple = !!select2Options.multiple;
+			hidden.select2(select2Options);
 			hidden.attr('type', 'text');
 			// jquery validate to work
 			hidden.bind('change.' + this.uniqueName, function(e, x) {
@@ -6224,22 +6271,35 @@
 					query.callback({ results: results.slice((query.page - 1) * this.pageSize, query.page * this.pageSize), more: results.length >= query.page * this.pageSize });
 				}), initSelection: ss.mkdel(this, function(element, callback) {
 					var val = element.val();
-					var item2 = null;
-					for (var i = 0; i < this.items.length; i++) {
-						var x = this.items[i];
-						if (ss.referenceEquals(x.id, val)) {
-							item2 = x;
-							break;
+					if (this.$multiple) {
+						var list = [];
+						var $t1 = val.split(',');
+						for (var $t2 = 0; $t2 < $t1.length; $t2++) {
+							var z = $t1[$t2];
+							var item2 = this.itemById[z];
+							if (ss.isValue(item2)) {
+								list.push(item2);
+							}
 						}
+						callback(list);
+						return;
 					}
-					callback(item2);
+					callback(this.itemById[val]);
 				}) };
+			},
+			get_delimited: function() {
+				return !!!!this.options.delimited;
 			},
 			clearItems: function() {
 				ss.clear(this.items);
+				this.itemById = {};
 			},
-			addItem: function(key, text, source, disabled) {
-				this.items.push({ id: key, text: text, source: source, disabled: disabled });
+			addItem: function(item) {
+				this.items.push(item);
+				this.itemById[item.id] = item;
+			},
+			addItem$1: function(key, text, source, disabled) {
+				this.addItem({ id: key, text: text, source: source, disabled: disabled });
 			},
 			addInplaceCreate: function(addTitle, editTitle) {
 				var self = this;
@@ -6291,19 +6351,72 @@
 					return { id: (-2147483648).toString(), text: Texts$Controls$SelectEditor.ClickToDefine.get() };
 				});
 			},
+			setEditValue: function(source, property) {
+				var val = source[property.name];
+				if (ss.isArray(val)) {
+					this.set_values(val);
+				}
+				else {
+					this.set_value((ss.isNullOrUndefined(val) ? null : val.toString()));
+				}
+			},
+			getEditValue: function(property, target) {
+				if (!this.$multiple || this.get_delimited()) {
+					target[property.name] = this.get_value();
+				}
+				else {
+					target[property.name] = this.get_values();
+				}
+			},
 			get_select2Container: function() {
 				return this.element.prevAll('.select2-container');
 			},
 			get_items: function() {
 				return this.items;
 			},
+			get_itemByKey: function() {
+				return this.itemById;
+			},
 			get_value: function() {
-				return ss.safeCast(this.element.select2('val'), String);
+				var val = this.element.select2('val');
+				if (ss.isValue(val) && ss.isArray(val)) {
+					return ss.cast(val, Array).join(',');
+				}
+				return ss.safeCast(val, String);
 			},
 			set_value: function(value) {
 				if (!ss.referenceEquals(value, this.get_value())) {
-					this.element.select2('val', value).triggerHandler('change', [true]);
+					var val = value;
+					if (!ss.isNullOrEmptyString(value) && this.$multiple) {
+						val = Enumerable.from(value.split(String.fromCharCode(44))).select(function(x) {
+							return Q.trimToNull(x);
+						}).where(function(x1) {
+							return ss.isValue(x1);
+						}).toArray();
+					}
+					this.element.select2('val', val).triggerHandler('change', [true]);
 				}
+			},
+			get_values: function() {
+				var val = this.element.select2('val');
+				if (ss.isNullOrUndefined(val)) {
+					return [];
+				}
+				if (ss.isArray(val)) {
+					return ss.cast(val, Array);
+				}
+				var str = ss.safeCast(val, String);
+				if (ss.isNullOrEmptyString(str)) {
+					return [];
+				}
+				return [str];
+			},
+			set_values: function(value) {
+				if (ss.isNullOrUndefined(value) || value.length === 0) {
+					this.set_value(null);
+					return;
+				}
+				this.set_value(value.join(','));
 			},
 			get_text: function() {
 				var $t1 = this.element.select2('data');
@@ -6315,7 +6428,7 @@
 		}, function() {
 			return ss.makeGenericType($Serenity_Widget$1, [TOptions]);
 		}, function() {
-			return [$Serenity_IStringValue];
+			return [$Serenity_ISetEditValue, $Serenity_IGetEditValue, $Serenity_IStringValue];
 		});
 		ss.setMetadata($type, { attr: [new Serenity.ElementAttribute('<input type="hidden"/>')] });
 		return $type;
@@ -7684,6 +7797,8 @@
 			return this.widgetName;
 		}
 	}, Serenity.ScriptContext);
+	ss.initInterface($Serenity_ISetEditValue, $asm, { setEditValue: null });
+	ss.initInterface($Serenity_IGetEditValue, $asm, { getEditValue: null });
 	ss.initInterface($Serenity_IStringValue, $asm, { get_value: null, set_value: null });
 	ss.initClass($Serenity_$FilterPanel$FieldSelect, $asm, {
 		emptyItemText: function() {
@@ -7697,7 +7812,7 @@
 			opt.allowClear = false;
 			return opt;
 		}
-	}, ss.makeGenericType($Serenity_Select2Editor$2, [Object, Object]), [$Serenity_IStringValue]);
+	}, ss.makeGenericType($Serenity_Select2Editor$2, [Object, Object]), [$Serenity_ISetEditValue, $Serenity_IGetEditValue, $Serenity_IStringValue]);
 	ss.initClass($Serenity_$FilterPanel$OperatorSelect, $asm, {
 		emptyItemText: function() {
 			return null;
@@ -7707,7 +7822,7 @@
 			opt.allowClear = false;
 			return opt;
 		}
-	}, ss.makeGenericType($Serenity_Select2Editor$2, [Object, Object]), [$Serenity_IStringValue]);
+	}, ss.makeGenericType($Serenity_Select2Editor$2, [Object, Object]), [$Serenity_ISetEditValue, $Serenity_IGetEditValue, $Serenity_IStringValue]);
 	ss.initInterface($Serenity_IAsyncInit, $asm, {});
 	ss.initClass($Serenity_AsyncLookupEditor, $asm, {
 		getLookupKey: function() {
@@ -7717,7 +7832,7 @@
 			}
 			return $t1;
 		}
-	}, ss.makeGenericType($Serenity_LookupEditorBase$2, [$Serenity_LookupEditorOptions, Object]), [$Serenity_IStringValue, $Serenity_IAsyncInit]);
+	}, ss.makeGenericType($Serenity_LookupEditorBase$2, [$Serenity_LookupEditorOptions, Object]), [$Serenity_ISetEditValue, $Serenity_IGetEditValue, $Serenity_IStringValue, $Serenity_IAsyncInit]);
 	ss.initInterface($Serenity_IFiltering, $asm, { get_field: null, set_field: null, get_container: null, set_container: null, get_operator: null, set_operator: null, createEditor: null, getCriteria: null, getOperators: null, loadState: null, saveState: null });
 	ss.initClass($Serenity_BaseFiltering, $asm, {
 		get_field: function() {
@@ -7943,8 +8058,6 @@
 			return this.appendNullableOperators($t1);
 		}
 	}, $Serenity_BaseFiltering, [$Serenity_IFiltering]);
-	ss.initInterface($Serenity_IGetEditValue, $asm, { getEditValue: null });
-	ss.initInterface($Serenity_ISetEditValue, $asm, { setEditValue: null });
 	ss.initClass($Serenity_CheckListEditor, $asm, {
 		getItems: function() {
 			return this.options.items || [];
@@ -7986,7 +8099,7 @@
 			if (ss.isNullOrUndefined(value)) {
 				this.element.val('');
 			}
-			else if (value === 'Today') {
+			else if (value.toLowerCase() === 'today' || value.toLowerCase() === 'now') {
 				this.element.val(Q.formatDate(ss.today(), null));
 			}
 			else {
@@ -8078,12 +8191,13 @@
 				this.element.val('');
 				this.$time.val('00:00');
 			}
-			else if (value === 'Today') {
+			else if (value.toLowerCase() === 'today') {
 				this.element.val(Q.formatDate(ss.today(), null));
 				this.$time.val('00:00');
 			}
 			else {
-				var val = Q.parseISODateTime(value);
+				var val = ((value.toLowerCase() === 'now') ? new Date() : Q.parseISODateTime(value));
+				val = $Serenity_DateTimeEditor.roundToMinutes(val, ss.coalesce(this.options.intervalMinutes, 5));
 				this.element.val(Q.formatDate(val, null));
 				this.$time.val(Q.formatDate(val, 'HH:mm'));
 			}
@@ -8136,8 +8250,24 @@
 				this.set_minValue(null);
 				this.set_maxValue(null);
 			}
+		},
+		get_readOnly: function() {
+			return this.element.hasClass('readonly');
+		},
+		set_readOnly: function(value) {
+			if (value !== this.get_readOnly()) {
+				if (value) {
+					this.element.addClass('readonly').attr('readonly', 'readonly');
+					this.element.nextAll('.ui-datepicker-trigger').css('opacity', '0.1');
+				}
+				else {
+					this.element.removeClass('readonly').removeAttr('readonly');
+					this.element.nextAll('.ui-datepicker-trigger').css('opacity', '1');
+				}
+				$Serenity_EditorUtils.setReadOnly$1(this.$time, value);
+			}
 		}
-	}, ss.makeGenericType($Serenity_Widget$1, [Object]), [$Serenity_IStringValue]);
+	}, ss.makeGenericType($Serenity_Widget$1, [Object]), [$Serenity_IStringValue, $Serenity_IReadOnly]);
 	ss.initClass($Serenity_DateTimeFiltering, $asm, {
 		getOperators: function() {
 			return this.appendNullableOperators(this.appendComparisonOperators([]));
@@ -8216,11 +8346,11 @@
 						$t3 = $t2;
 					}
 					var text = ss.cast($t3, String);
-					this.addItem(key, text, item, false);
+					this.addItem$1(key, text, item, false);
 				}
 			}
 		}
-	}, ss.makeGenericType($Serenity_Select2Editor$2, [$Serenity_SelectEditorOptions, Object]), [$Serenity_IStringValue]);
+	}, ss.makeGenericType($Serenity_Select2Editor$2, [$Serenity_SelectEditorOptions, Object]), [$Serenity_ISetEditValue, $Serenity_IGetEditValue, $Serenity_IStringValue]);
 	ss.initClass($Serenity_DateYearEditor, $asm, {
 		getItems: function() {
 			var opt = this.options;
@@ -8266,7 +8396,7 @@
 			}
 			return years;
 		}
-	}, $Serenity_SelectEditor, [$Serenity_IStringValue]);
+	}, $Serenity_SelectEditor, [$Serenity_ISetEditValue, $Serenity_IGetEditValue, $Serenity_IStringValue]);
 	ss.initClass($Serenity_SelectEditorOptions, $asm, {});
 	ss.initClass($Serenity_DateYearEditorOptions, $asm, {}, $Serenity_SelectEditorOptions);
 	ss.initInterface($Serenity_IDoubleValue, $asm, { get_value: null, set_value: null });
@@ -8385,7 +8515,7 @@
 			}
 			return $Serenity_EditorTypeEditor.$editorTypeList;
 		}
-	}, $Serenity_SelectEditor, [$Serenity_IStringValue]);
+	}, $Serenity_SelectEditor, [$Serenity_ISetEditValue, $Serenity_IGetEditValue, $Serenity_IStringValue]);
 	ss.initClass($Serenity_EditorTypeRegistry, $asm, {});
 	ss.initClass($Serenity_EditorUtils, $asm, {});
 	ss.initClass($Serenity_EmailEditor, $asm, {
@@ -8465,10 +8595,10 @@
 			for (var $t2 = 0; $t2 < $t1.length; $t2++) {
 				var x = $t1[$t2];
 				var name = ss.Enum.toString(enumType, x);
-				this.addItem(ss.unbox(ss.cast(x, ss.Int32)).toString(), ss.coalesce(Q.tryGetText('Enums.' + this.options.enumKey + '.' + name), name), null, false);
+				this.addItem$1(ss.unbox(ss.cast(x, ss.Int32)).toString(), ss.coalesce(Q.tryGetText('Enums.' + this.options.enumKey + '.' + name), name), null, false);
 			}
 		}
-	}, ss.makeGenericType($Serenity_Select2Editor$2, [$Serenity_EnumEditorOptions, Object]), [$Serenity_IStringValue]);
+	}, ss.makeGenericType($Serenity_Select2Editor$2, [$Serenity_EnumEditorOptions, Object]), [$Serenity_ISetEditValue, $Serenity_IGetEditValue, $Serenity_IStringValue]);
 	ss.initClass($Serenity_EnumEditorOptions, $asm, {});
 	ss.initClass($Serenity_EnumFiltering, $asm, {
 		getOperators: function() {
@@ -8914,10 +9044,10 @@
 				if (inParens && (line.rightParen || line.leftParen)) {
 					if (!Serenity.Criteria.isEmpty(currentBlock)) {
 						if (isBlockOr) {
-							activeCriteria = Serenity.Criteria.join(activeCriteria, 'or', currentBlock);
+							activeCriteria = Serenity.Criteria.join(activeCriteria, 'or', Serenity.Criteria.paren(currentBlock));
 						}
 						else {
-							activeCriteria = Serenity.Criteria.join(activeCriteria, 'and', currentBlock);
+							activeCriteria = Serenity.Criteria.join(activeCriteria, 'and', Serenity.Criteria.paren(currentBlock));
 						}
 						currentBlock = [''];
 					}
@@ -8936,10 +9066,10 @@
 			}
 			if (!Serenity.Criteria.isEmpty(currentBlock)) {
 				if (isBlockOr) {
-					activeCriteria = Serenity.Criteria.join(activeCriteria, 'or', currentBlock);
+					activeCriteria = Serenity.Criteria.join(activeCriteria, 'or', Serenity.Criteria.paren(currentBlock));
 				}
 				else {
-					activeCriteria = Serenity.Criteria.join(activeCriteria, 'and', currentBlock);
+					activeCriteria = Serenity.Criteria.join(activeCriteria, 'and', Serenity.Criteria.paren(currentBlock));
 				}
 			}
 			return activeCriteria;
@@ -9120,9 +9250,22 @@
 			// validasyonun çalışması için
 			x.editor.setData(this.element.val());
 		},
+		getLanguage: function() {
+			var lang = ss.coalesce(Q.trimToNull($('html').attr('lang')), 'en');
+			if (!!CKEDITOR.lang.languages[lang]) {
+				return lang;
+			}
+			if (lang.indexOf(String.fromCharCode(45)) >= 0) {
+				lang = lang.split(String.fromCharCode(45))[0];
+			}
+			if (!!CKEDITOR.lang.languages[lang]) {
+				return lang;
+			}
+			return 'en';
+		},
 		getConfig: function() {
 			var self = this;
-			return { customConfig: '', language: 'tr', bodyClass: 's-HtmlContentBody', on: {
+			return { customConfig: '', language: this.getLanguage(), bodyClass: 's-HtmlContentBody', on: {
 				instanceReady: function(x) {
 					self.instanceReady(x);
 				},
@@ -9154,11 +9297,9 @@
 		},
 		set_value: function(value) {
 			var instance = this.$getEditorInstance();
+			this.element.val(value);
 			if (this.$instanceReady && ss.isValue(instance)) {
 				instance.setData(value);
-			}
-			else {
-				this.element.val(value);
 			}
 		}
 	}, ss.makeGenericType($Serenity_Widget$1, [$Serenity_HtmlContentEditorOptions]), [$Serenity_IStringValue]);
@@ -9293,7 +9434,7 @@
 	}, ss.makeGenericType($Serenity_BaseEditorFiltering$1, [$Serenity_IntegerEditor]), [$Serenity_IFiltering]);
 	ss.initInterface($Serenity_IValidateRequired, $asm, { get_required: null, set_required: null });
 	ss.initClass($Serenity_JsRender, $asm, {});
-	ss.initClass($Serenity_LookupEditor, $asm, {}, ss.makeGenericType($Serenity_LookupEditorBase$2, [$Serenity_LookupEditorOptions, Object]), [$Serenity_IStringValue]);
+	ss.initClass($Serenity_LookupEditor, $asm, {}, ss.makeGenericType($Serenity_LookupEditorBase$2, [$Serenity_LookupEditorOptions, Object]), [$Serenity_ISetEditValue, $Serenity_IGetEditValue, $Serenity_IStringValue]);
 	ss.initClass($Serenity_LookupEditorOptions, $asm, {});
 	ss.initClass($Serenity_LookupFiltering, $asm, {
 		getOperators: function() {
@@ -9605,7 +9746,7 @@
 				editor = ss.cast(new editorType(element, editorParams), $Serenity_Widget);
 			}
 			editor.initialize();
-			if (ss.isInstanceOfType(editor, $Serenity_BooleanEditor)) {
+			if (ss.isInstanceOfType(editor, $Serenity_BooleanEditor) && (ss.isNullOrUndefined(item.editorParams) || !!!item.editorParams['labelFor'])) {
 				label.removeAttr('for');
 			}
 			if (ss.isValue(item.maxLength)) {
@@ -9713,7 +9854,7 @@
 		set_mode: function(value) {
 			if (this.options.mode !== value) {
 				this.options.mode = value;
-				this.$updateReadOnly();
+				this.$updateInterface();
 			}
 		},
 		load: function(source) {
@@ -9735,13 +9876,17 @@
 				}
 			}
 		},
-		$updateReadOnly: function() {
+		$updateInterface: function() {
 			for (var i = 0; i < this.$editors.length; i++) {
 				var item = this.$items[i];
 				var editor = this.$editors[i];
 				var readOnly = item.readOnly === true || this.get_mode() === 0 && item.insertable === false || this.get_mode() === 1 && item.updatable === false;
 				$Serenity_EditorUtils.setReadOnly(editor, readOnly);
 				$Serenity_EditorUtils.setRequired(editor, !readOnly && !!item.required && item.editorType !== 'Boolean');
+				if (item.visible === false || item.hideOnInsert === true || item.hideOnUpdate === true) {
+					var hidden = item.visible === false || this.get_mode() === 0 && item.hideOnInsert === true || this.get_mode() === 1 && item.hideOnUpdate === true;
+					$Serenity_WX.getGridField(editor).toggle(!hidden);
+				}
 			}
 		},
 		enumerateItems: function(callback) {
@@ -9796,6 +9941,17 @@
 			}
 			else {
 				done(true);
+			}
+		},
+		get_field: function() {
+			return this.$field;
+		},
+		set_field: function(value) {
+			if (!ss.referenceEquals(this.$field, value)) {
+				this.$fieldChanged = true;
+				this.$field = value;
+				this.$updateInputPlaceHolder();
+				this.checkIfValueChanged();
 			}
 		}
 	}, ss.makeGenericType($Serenity_Widget$1, [$Serenity_QuickSearchInputOptions]));
@@ -10198,7 +10354,7 @@
 	ss.setMetadata($Serenity_CheckListEditorOptions, { members: [{ attr: [new $Serenity_ComponentModel_HiddenAttribute()], name: 'Items', type: 16, returnType: Array, getter: { name: 'get_Items', type: 8, params: [], returnType: Array, fget: 'items' }, setter: { name: 'set_Items', type: 8, params: [Array], returnType: Object, fset: 'items' }, fname: 'items' }, { attr: [new $System_ComponentModel_DisplayNameAttribute('Tümünü Seç Metni')], name: 'SelectAllOptionText', type: 16, returnType: String, getter: { name: 'get_SelectAllOptionText', type: 8, params: [], returnType: String, fget: 'selectAllOptionText' }, setter: { name: 'set_SelectAllOptionText', type: 8, params: [String], returnType: Object, fset: 'selectAllOptionText' }, fname: 'selectAllOptionText' }] });
 	ss.setMetadata($Serenity_CheckTreeEditor$2, { attr: [new Serenity.ElementAttribute('<div/>'), new Serenity.IdPropertyAttribute('id')] });
 	ss.setMetadata($Serenity_DateEditor, { attr: [new Serenity.EditorAttribute(), new $System_ComponentModel_DisplayNameAttribute('Tarih'), new Serenity.ElementAttribute('<input type="text"/>')], members: [{ attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'MaxValue', type: 16, returnType: String, getter: { name: 'get_MaxValue', type: 8, sname: 'get_maxValue', returnType: String, params: [] }, setter: { name: 'set_MaxValue', type: 8, sname: 'set_maxValue', returnType: Object, params: [String] } }, { attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'MinValue', type: 16, returnType: String, getter: { name: 'get_MinValue', type: 8, sname: 'get_minValue', returnType: String, params: [] }, setter: { name: 'set_MinValue', type: 8, sname: 'set_minValue', returnType: Object, params: [String] } }, { attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'SqlMinMax', type: 16, returnType: Boolean, getter: { name: 'get_SqlMinMax', type: 8, sname: 'get_sqlMinMax', returnType: Boolean, params: [] }, setter: { name: 'set_SqlMinMax', type: 8, sname: 'set_sqlMinMax', returnType: Object, params: [Boolean] } }] });
-	ss.setMetadata($Serenity_DateTimeEditor, { attr: [new Serenity.EditorAttribute(), new $System_ComponentModel_DisplayNameAttribute('Tarih/Zaman'), new Serenity.ElementAttribute('<input type="text"/>')], members: [{ attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'MaxValue', type: 16, returnType: String, getter: { name: 'get_MaxValue', type: 8, sname: 'get_maxValue', returnType: String, params: [] }, setter: { name: 'set_MaxValue', type: 8, sname: 'set_maxValue', returnType: Object, params: [String] } }, { attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'MinValue', type: 16, returnType: String, getter: { name: 'get_MinValue', type: 8, sname: 'get_minValue', returnType: String, params: [] }, setter: { name: 'set_MinValue', type: 8, sname: 'set_minValue', returnType: Object, params: [String] } }, { attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'SqlMinMax', type: 16, returnType: Boolean, getter: { name: 'get_SqlMinMax', type: 8, sname: 'get_sqlMinMax', returnType: Boolean, params: [] }, setter: { name: 'set_SqlMinMax', type: 8, sname: 'set_sqlMinMax', returnType: Object, params: [Boolean] } }] });
+	ss.setMetadata($Serenity_DateTimeEditor, { attr: [new Serenity.EditorAttribute(), new $System_ComponentModel_DisplayNameAttribute('Date/Time'), new Serenity.ElementAttribute('<input type="text"/>')], members: [{ attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'MaxValue', type: 16, returnType: String, getter: { name: 'get_MaxValue', type: 8, sname: 'get_maxValue', returnType: String, params: [] }, setter: { name: 'set_MaxValue', type: 8, sname: 'set_maxValue', returnType: Object, params: [String] } }, { attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'MinValue', type: 16, returnType: String, getter: { name: 'get_MinValue', type: 8, sname: 'get_minValue', returnType: String, params: [] }, setter: { name: 'set_MinValue', type: 8, sname: 'set_minValue', returnType: Object, params: [String] } }, { attr: [new Serenity.ComponentModel.OptionAttribute()], name: 'SqlMinMax', type: 16, returnType: Boolean, getter: { name: 'get_SqlMinMax', type: 8, sname: 'get_sqlMinMax', returnType: Boolean, params: [] }, setter: { name: 'set_SqlMinMax', type: 8, sname: 'set_sqlMinMax', returnType: Object, params: [Boolean] } }] });
 	ss.setMetadata($Serenity_DateYearEditor, { attr: [new Serenity.EditorAttribute(), new $System_ComponentModel_DisplayNameAttribute('Yıl'), new Serenity.OptionsTypeAttribute($Serenity_DateYearEditorOptions), new Serenity.ElementAttribute('<input type="hidden"/>')] });
 	ss.setMetadata($Serenity_DecimalEditor, { attr: [new Serenity.EditorAttribute(), new $System_ComponentModel_DisplayNameAttribute('Ondalıklı Sayı'), new Serenity.OptionsTypeAttribute($Serenity_DecimalEditorOptions), new Serenity.ElementAttribute('<input type="text"/>')] });
 	ss.setMetadata($Serenity_DecimalEditorOptions, { members: [{ attr: [new $System_ComponentModel_DisplayNameAttribute('Ondalık'), new $Serenity_ComponentModel_EditorTypeAttribute('Integer')], name: 'Decimals', type: 16, returnType: ss.makeGenericType(ss.Nullable$1, [ss.Int32]), getter: { name: 'get_Decimals', type: 8, params: [], returnType: ss.makeGenericType(ss.Nullable$1, [ss.Int32]), fget: 'decimals' }, setter: { name: 'set_Decimals', type: 8, params: [ss.makeGenericType(ss.Nullable$1, [ss.Int32])], returnType: Object, fset: 'decimals' }, fname: 'decimals' }, { attr: [new $System_ComponentModel_DisplayNameAttribute('Max Değer')], name: 'MaxValue', type: 16, returnType: String, getter: { name: 'get_MaxValue', type: 8, params: [], returnType: String, fget: 'maxValue' }, setter: { name: 'set_MaxValue', type: 8, params: [String], returnType: Object, fset: 'maxValue' }, fname: 'maxValue' }, { attr: [new $System_ComponentModel_DisplayNameAttribute('Min Değer')], name: 'MinValue', type: 16, returnType: String, getter: { name: 'get_MinValue', type: 8, params: [], returnType: String, fget: 'minValue' }, setter: { name: 'set_MinValue', type: 8, params: [String], returnType: Object, fset: 'minValue' }, fname: 'minValue' }, { attr: [new $System_ComponentModel_DisplayNameAttribute('Ondalıkları Sıfırla Doldur'), new $Serenity_ComponentModel_EditorTypeAttribute('Boolean')], name: 'PadDecimals', type: 16, returnType: ss.makeGenericType(ss.Nullable$1, [Boolean]), getter: { name: 'get_PadDecimals', type: 8, params: [], returnType: ss.makeGenericType(ss.Nullable$1, [Boolean]), fget: 'padDecimals' }, setter: { name: 'set_PadDecimals', type: 8, params: [ss.makeGenericType(ss.Nullable$1, [Boolean])], returnType: Object, fset: 'padDecimals' }, fname: 'padDecimals' }] });
